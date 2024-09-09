@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch via PNPM",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "start:debug"],
+      "runtimeExecutable": "pnpm",
+      "runtimeVersion": "18.18.0",
+      "internalConsoleOptions": "neverOpen",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    }
+  ]
+}

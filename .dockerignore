@@ -1,0 +1,8 @@
+/dist
+/node_modules
+/src/config*.yaml
+/src/deploy*.md
+/.git
+/.vscode
+/.husky
+.DS_Store
