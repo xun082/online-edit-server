@@ -38,6 +38,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-fastify": "^10.3.10",
     "@nestjs/platform-socket.io": "^10.3.10",
+    "@nestjs/platform-ws": "^10.4.3",
     "@nestjs/schedule": "^4.1.0",
     "@nestjs/swagger": "^7.4.0",
     "@nestjs/terminus": "^10.2.3",
@@ -65,7 +66,9 @@
     "svg-captcha": "^1.4.0",
     "uuid": "^10.0.0",
     "winston": "^3.13.1",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.19"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
@@ -132,7 +135,7 @@
   },
   "engines": {
     "node": ">=18",
-    "pnpm": "9.4.0"
+    "pnpm": ">=9.0.0"
   },
   "engineStrict": true
 }
