@@ -3,9 +3,10 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { fastifyMultipart } from '@fastify/multipart';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 import { AppModule } from './app.module';
-import metadata from './metadata';
+// import metadata from './metadata';
 import { registerFastifyPlugin } from './common/fastify';
 
 async function bootstrap() {
@@ -34,6 +35,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1/');
 
+  app.useWebSocketAdapter(new WsAdapter(app));
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -44,7 +47,7 @@ async function bootstrap() {
   const config = new DocumentBuilder().setTitle('接口文档').setVersion('1.0').build();
 
   /** @see https://github.com/nestjs/swagger/issues/2493 */
-  await SwaggerModule.loadPluginMetadata(metadata);
+  // await SwaggerModule.loadPluginMetadata(metadata);
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
