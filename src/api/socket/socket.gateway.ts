@@ -23,7 +23,7 @@ import { WebsocketExceptionsFilter } from '@/core/filter/WebsocketExceptions.fil
 import { SocketKeys } from '@/common/enum/socket';
 
 @WebSocketGateway(81, {
-  namespace: 'event',
+  path: 'event',
   cors: {
     origin: 'http://localhost:3000',
     credentials: true,

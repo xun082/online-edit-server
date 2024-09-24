@@ -14,4 +14,4 @@ import { CollaborateDoc, CollaborateDocSchema } from './schema/collaborate-doc.s
   exports: [CollaborateDocService],
   controllers: [CollaborateDocController],
 })
-export class YDocumentModule {}
+export class CollaborateDocModule {}
