@@ -13,7 +13,7 @@ import { IncomingMessage } from 'http';
 import { CollaborateDocService } from './collaborate-doc.service';
 
 @WebSocketGateway({
-  path: '/CollaborateDoc',
+  path: '/collaborateDoc',
   transports: ['websocket'],
   cors: {
     origin: '*',

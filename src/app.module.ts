@@ -14,6 +14,7 @@ import { AuthModule } from './api/auth/auth.module';
 import { SocketModule } from './api/socket/socket.module';
 import { UploadModule } from './api/upload/upload.module';
 import { PostModule } from './api/post/post.module';
+import { CollaborateDocModule } from './api/collaborate-doc/collaborate-doc.module';
 
 import loadDatabaseConfig from '@/config/mongo.config';
 
@@ -37,6 +38,7 @@ const NODE_ENV = process.env.NODE_ENV ? 'production' : 'development';
     SocketModule,
     UploadModule,
     PostModule,
+    CollaborateDocModule,
   ],
   controllers: [],
   providers: [
