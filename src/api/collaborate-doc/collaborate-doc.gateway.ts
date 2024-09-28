@@ -6,9 +6,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, WebSocket } from 'ws';
 import * as Y from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
-import { setupWSConnection } from 'y-websocket/bin/utils';
+import { setupWSConnection, setPersistence } from 'y-websocket/bin/utils';
 import { IncomingMessage } from 'http';
+import { MongodbPersistence } from 'y-mongodb-provider';
 
 import { CollaborateDocService } from './collaborate-doc.service';
 
@@ -22,13 +22,9 @@ import { CollaborateDocService } from './collaborate-doc.service';
 export class CollaborateDocGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
-  private doc: Y.Doc;
-  private wsProvider: WebsocketProvider;
   private docsMap: Map<string, Y.Doc> = new Map();
 
-  constructor(private readonly CollaborateDocService: CollaborateDocService) {
-    this.doc = new Y.Doc();
-  }
+  constructor(private readonly collaborateDocService: CollaborateDocService) {}
 
   async handleConnection(client: WebSocket, request: IncomingMessage) {
     const url = new URL(request.url, `http://${request.headers.host}`);
@@ -41,39 +37,27 @@ export class CollaborateDocGateway implements OnGatewayConnection, OnGatewayDisc
       return;
     }
 
-    let ydoc = this.docsMap.get(record_id);
-
-    if (!ydoc) {
-      ydoc = new Y.Doc();
-      this.docsMap.set(record_id, ydoc);
-
-      const persistedState = await this.CollaborateDocService.getDoc(record_id);
-
-      console.log('persistedState >>>>>', Buffer.from(persistedState).toString('base64'));
-
-      if (persistedState) {
-        Y.applyUpdate(ydoc, persistedState);
-      }
-    }
-
-    // 自定义消息处理
-    client.on('message', (message: ArrayBuffer) => {
-      // const encoder = encoding.createEncoder();
-      // const decoder = decoding.createDecoder(new Uint8Array(message));
-      // const messageType = decoding.readVarUint(decoder);
-      // console.log('Raw message:', messageType);
-      // switch (messageType) {
-      //   case syncProtocol.messageYjsUpdate:
-      //     decoding.readVarUint(decoder); // Read the additional length
-      //     const update = decoding.readVarUint8Array(decoder);
-      //     Y.applyUpdate(ydoc, update);
-      //     break;
-      // }
-    });
-
     setupWSConnection(client, request, {
       docName: record_id,
       gc: true,
+    });
+
+    setPersistence({
+      bindState: async (docName: string, ydoc) => {
+        const persistedYdoc = await this.collaborateDocService.mdb.getYDoc(docName);
+        const newUpdates = Y.encodeStateAsUpdate(ydoc);
+        this.collaborateDocService.mdb.storeUpdate(docName, newUpdates);
+        Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
+
+        ydoc.on('update', async (update: Uint8Array) => {
+          this.collaborateDocService.mdb.storeUpdate(docName, update);
+        });
+      },
+      writeState: () => {
+        return new Promise((resolve) => {
+          resolve(true);
+        });
+      },
     });
   }
 
