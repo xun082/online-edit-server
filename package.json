@@ -67,6 +67,7 @@
     "uuid": "^10.0.0",
     "winston": "^3.13.1",
     "winston-daily-rotate-file": "^5.0.0",
+    "y-mongodb-provider": "^0.2.0",
     "y-websocket": "^2.0.4",
     "yjs": "^13.6.19"
   },

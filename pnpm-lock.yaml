@@ -137,6 +137,9 @@ importers:
       winston-daily-rotate-file:
         specifier: ^5.0.0
         version: 5.0.0(winston@3.13.1)
+      y-mongodb-provider:
+        specifier: ^0.2.0
+        version: 0.2.0(socks@2.8.3)(yjs@13.6.19)
       y-websocket:
         specifier: ^2.0.4
         version: 2.0.4(yjs@13.6.19)
@@ -6089,6 +6092,11 @@ packages:
     resolution: {integrity: sha512-6ulEn5AXfXJYi89rXPEg2mMHAyyw8+ZfeMMdOtBbV8FJpQ1NOrcgi6DTAcXof0dap84NjHPT2+9d0rb6cFsjEg==}
     peerDependencies:
       yjs: ^13.0.0
+
+  y-mongodb-provider@0.2.0:
+    resolution: {integrity: sha512-l2Qus1lix7TkxemLGzMJn8HYKiUD+vLJpZxYjtPvdBNbM7THhgVuyHvZYzknUDonvnBBjnpbDaZkKPWOMAsSAw==}
+    peerDependencies:
+      yjs: ^13.6.15
 
   y-protocols@1.0.6:
     resolution: {integrity: sha512-vHRF2L6iT3rwj1jub/K5tYcTT/mEYDUppgNPXwp8fmLpui9f7Yeq3OEtTLVF012j39QnV+KEQpNqoN7CWU7Y9Q==}
@@ -12930,6 +12938,20 @@ snapshots:
       lib0: 0.2.97
       yjs: 13.6.19
     optional: true
+
+  y-mongodb-provider@0.2.0(socks@2.8.3)(yjs@13.6.19):
+    dependencies:
+      lib0: 0.2.97
+      mongodb: 6.7.0(socks@2.8.3)
+      yjs: 13.6.19
+    transitivePeerDependencies:
+      - '@aws-sdk/credential-providers'
+      - '@mongodb-js/zstd'
+      - gcp-metadata
+      - kerberos
+      - mongodb-client-encryption
+      - snappy
+      - socks
 
   y-protocols@1.0.6(yjs@13.6.19):
     dependencies:

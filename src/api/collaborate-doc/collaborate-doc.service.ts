@@ -1,16 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+// import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import * as Y from 'yjs';
-import { v4 as uuidv4 } from 'uuid';
+import { MongodbPersistence } from 'y-mongodb-provider';
 
 import { CollaborateDoc } from './schema/collaborate-doc.schema';
 
 @Injectable()
-export class CollaborateDocService {
+export class CollaborateDocService implements OnModuleInit {
+  public mdb: MongodbPersistence;
+
   constructor(
     @InjectModel(CollaborateDoc.name) private CollaborateDocModal: Model<CollaborateDoc>,
   ) {}
+
+  async onModuleInit() {
+    this.mdb = new MongodbPersistence(
+      'mongodb://admin:online@localhost:27017/online?authSource=admin',
+      {
+        collectionName: 'transactions',
+        multipleCollections: false,
+      },
+    );
+  }
 
   async getDocList() {
     return this.CollaborateDocModal.find({}).exec();
@@ -19,8 +32,8 @@ export class CollaborateDocService {
   async createDoc(docName: string) {
     const doc = new Y.Doc();
 
-    const ytext = doc.getText('content');
-    ytext.insert(0, '');
+    const ytext = doc.getText('monaco');
+    ytext.insert(0, 'console.log("hello world")');
 
     const initialState = Y.encodeStateAsUpdate(doc);
 
@@ -54,8 +67,6 @@ export class CollaborateDocService {
 
       const newState = Buffer.from(Y.encodeStateAsUpdate(ydoc));
 
-      console.log('storeUpdate >>>>', newState.toString('base64'));
-
       await this.CollaborateDocModal.updateOne(
         { _id: recordId },
         { $set: { state: newState } },
@@ -67,4 +78,9 @@ export class CollaborateDocService {
       await newDoc.save();
     }
   }
+
+  // @Cron(CronExpression.EVERY_10_MINUTES)
+  // handleMergeUpdate() {
+  //   this.mdb.flushDocument();
+  // }
 }

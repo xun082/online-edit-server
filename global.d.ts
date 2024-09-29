@@ -6,4 +6,11 @@ declare module 'y-websocket/bin/utils' {
     request: IncomingMessage,
     options?: { docName?: string; gc?: boolean },
   ): void;
+  export function setPersistence({
+    bindState,
+    writeState,
+  }: {
+    bindState: (docName: string, ydoc: Y.Doc) => Promise<void>;
+    writeState: (docName: string, ydoc: Y.Doc) => Promise<any>;
+  });
 }
