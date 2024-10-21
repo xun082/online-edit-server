@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { LogsModule } from './common/logs/logs.module';
 import { TasksModule } from './common/tasks/tasks.module';
@@ -39,6 +40,7 @@ const NODE_ENV = process.env.NODE_ENV ? 'production' : 'development';
     UploadModule,
     PostModule,
     CollaborateDocModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [

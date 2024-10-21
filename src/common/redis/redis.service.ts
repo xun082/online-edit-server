@@ -68,8 +68,10 @@ export class RedisService implements OnModuleDestroy {
    * @param {string} key
    * @return {*}
    */
-  public async del(key: string): Promise<Result<number, ClientContext>> {
-    return await this.redisClient.del(key);
+  public async del(keys: string | string[]): Promise<Result<number, ClientContext>> {
+    return Array.isArray(keys)
+      ? await this.redisClient.del(...keys)
+      : await this.redisClient.del(keys);
   }
 
   async hset(key: string, field: ObjectType): Promise<Result<number, ClientContext>> {
@@ -112,5 +114,32 @@ export class RedisService implements OnModuleDestroy {
     await this.redisClient.del(`offline_notifications:${userId}`);
 
     return notifications.map((notification) => JSON.parse(notification));
+  }
+
+  async scanKeys(pattern: string, count: number = 100): Promise<string[]> {
+    const keys: string[] = [];
+    let cursor = '0';
+
+    try {
+      do {
+        const [nextCursor, scanKeys] = await this.redisClient.scan(
+          cursor,
+          'MATCH',
+          pattern,
+          'COUNT',
+          count.toString(),
+        );
+        cursor = nextCursor;
+        keys.push(...scanKeys);
+      } while (cursor !== '0');
+
+      return keys;
+    } catch (error) {
+      console.error('Error scanning Redis keys:', error);
+    }
+  }
+
+  async mget(keys: string[]): Promise<(string | null)[]> {
+    return await this.redisClient.mget(keys);
   }
 }
