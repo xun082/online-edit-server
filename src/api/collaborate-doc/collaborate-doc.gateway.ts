@@ -8,6 +8,7 @@ import { Server, WebSocket } from 'ws';
 import * as Y from 'yjs';
 import { setupWSConnection, setPersistence } from 'y-websocket/bin/utils';
 import { IncomingMessage } from 'http';
+import { MongodbPersistence } from 'y-mongodb-provider';
 
 import { CollaborateDocService } from './collaborate-doc.service';
 import { CacheStoreService } from '../cache-store/cache-store.service';
@@ -48,8 +49,6 @@ export class CollaborateDocGateway implements OnGatewayConnection, OnGatewayDisc
     setPersistence({
       bindState: async (docName: string, ydoc) => {
         const persistedYdoc = await this.collaborateDocService.mdb.getYDoc(docName);
-
-        console.log('persistedYdoc', persistedYdoc);
 
         const newUpdates = Y.encodeStateAsUpdate(ydoc);
         this.collaborateDocService.mdb.storeUpdate(docName, newUpdates);

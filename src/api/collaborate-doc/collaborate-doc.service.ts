@@ -80,4 +80,9 @@ export class CollaborateDocService implements OnModuleInit {
       console.log('storeUpdate error', error);
     }
   }
+
+  // @Cron(CronExpression.EVERY_10_MINUTES)
+  // handleMergeUpdate() {
+  //   this.mdb.flushDocument();
+  // }
 }
