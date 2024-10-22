@@ -46,36 +46,38 @@ export class CollaborateDocService implements OnModuleInit {
   }
 
   async getDoc(recordId: string) {
-    const persistedDoc = await this.CollaborateDocModal.findOne({ recordId });
+    const doc = await this.CollaborateDocModal.findOne({ _id: recordId });
 
-    const doc = new Y.Doc();
-
-    if (persistedDoc && persistedDoc.state) {
-      return new Uint8Array(persistedDoc.state);
-    }
-
-    return Y.encodeStateAsUpdate(doc);
+    return doc;
   }
 
   async storeUpdate(recordId: string, update: Uint8Array): Promise<void> {
-    const existingDoc = await this.CollaborateDocModal.findOne({ recordId }).exec();
+    try {
+      const existingDoc = await this.CollaborateDocModal.findOne({ _id: recordId }).exec();
 
-    if (existingDoc) {
-      const ydoc = new Y.Doc();
-      Y.applyUpdate(ydoc, existingDoc.state);
-      Y.applyUpdate(ydoc, update);
+      if (existingDoc) {
+        const ydoc = new Y.Doc();
 
-      const newState = Buffer.from(Y.encodeStateAsUpdate(ydoc));
+        const existingState = new Uint8Array(existingDoc.state);
+        Y.applyUpdate(ydoc, existingState);
+        Y.applyUpdate(ydoc, update);
 
-      await this.CollaborateDocModal.updateOne(
-        { _id: recordId },
-        { $set: { state: newState } },
-      ).exec();
-    } else {
-      const newDoc = new this.CollaborateDocModal({
-        state: update,
-      });
-      await newDoc.save();
+        const newState = Buffer.from(Y.encodeStateAsUpdate(ydoc));
+
+        console.log('update ydoc text ', ydoc.getText('monaco').toString());
+
+        await this.CollaborateDocModal.updateOne(
+          { _id: recordId },
+          { $set: { state: newState } },
+        ).exec();
+      } else {
+        const newDoc = new this.CollaborateDocModal({
+          state: update,
+        });
+        await newDoc.save();
+      }
+    } catch (error) {
+      console.log('storeUpdate error', error);
     }
   }
 

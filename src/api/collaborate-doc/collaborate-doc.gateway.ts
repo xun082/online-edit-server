@@ -11,6 +11,7 @@ import { IncomingMessage } from 'http';
 import { MongodbPersistence } from 'y-mongodb-provider';
 
 import { CollaborateDocService } from './collaborate-doc.service';
+import { CacheStoreService } from '../cache-store/cache-store.service';
 
 @WebSocketGateway({
   path: '/collaborateDoc',
@@ -24,7 +25,10 @@ export class CollaborateDocGateway implements OnGatewayConnection, OnGatewayDisc
 
   private docsMap: Map<string, Y.Doc> = new Map();
 
-  constructor(private readonly collaborateDocService: CollaborateDocService) {}
+  constructor(
+    private readonly collaborateDocService: CollaborateDocService,
+    private readonly cacheStoreService: CacheStoreService,
+  ) {}
 
   async handleConnection(client: WebSocket, request: IncomingMessage) {
     const url = new URL(request.url, `http://${request.headers.host}`);
@@ -45,11 +49,29 @@ export class CollaborateDocGateway implements OnGatewayConnection, OnGatewayDisc
     setPersistence({
       bindState: async (docName: string, ydoc) => {
         const persistedYdoc = await this.collaborateDocService.mdb.getYDoc(docName);
+
         const newUpdates = Y.encodeStateAsUpdate(ydoc);
         this.collaborateDocService.mdb.storeUpdate(docName, newUpdates);
         Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
 
+        // try {
+        //   const base64Docs = JSON.parse(await this.cacheStoreService.getDoc(docName));
+
+        //   const docUpdates = base64Docs?.map((d) => new Uint8Array(Buffer.from(d, 'base64')));
+
+        //   if (docUpdates && docUpdates.length > 0) {
+        //     ydoc.transact(() => {
+        //       docUpdates.forEach((update) => {
+        //         Y.applyUpdate(ydoc, update.buffer); // 将更新应用到当前 ydoc 文档
+        //       });
+        //     });
+        //   }
+        // } catch (error) {
+        //   console.log('bindState error', error);
+        // }
+
         ydoc.on('update', async (update: Uint8Array) => {
+          // this.cacheStoreService.storeDoc(docName, update);
           this.collaborateDocService.mdb.storeUpdate(docName, update);
         });
       },
