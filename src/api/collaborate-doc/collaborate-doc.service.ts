@@ -1,11 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 // import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import * as Y from 'yjs';
 import { MongodbPersistence } from 'y-mongodb-provider';
+import { v4 as uuidv4 } from 'uuid';
 
 import { CollaborateDoc } from './schema/collaborate-doc.schema';
+import { CreateShareLinkDto, ShareDetailDto } from './dto/collaborate-doc.dto';
 
 @Injectable()
 export class CollaborateDocService implements OnModuleInit {
@@ -79,6 +81,36 @@ export class CollaborateDocService implements OnModuleInit {
     } catch (error) {
       console.log('storeUpdate error', error);
     }
+  }
+
+  async createShareLink(shareDocDto: CreateShareLinkDto) {
+    const { recordId, accessLevel = 'edit' } = shareDocDto;
+
+    const shareId = uuidv4();
+
+    const shareLink = `/share/${shareId}`;
+
+    await this.CollaborateDocModal.findByIdAndUpdate(recordId, {
+      shareId,
+      shareLink,
+      accessLevel,
+    });
+
+    return { shareLink, accessLevel };
+  }
+
+  async shareLinkDetail(shareDetailDto: ShareDetailDto) {
+    const { shareId } = shareDetailDto;
+    const document = await this.CollaborateDocModal.findOne({ shareId });
+
+    if (!document) {
+      throw new NotFoundException('share link not find');
+    }
+
+    return {
+      document: document.state, // 假设文档内容保存在 content 字段中
+      accessLevel: document.accessLevel,
+    };
   }
 
   // @Cron(CronExpression.EVERY_10_MINUTES)

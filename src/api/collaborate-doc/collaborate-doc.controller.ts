@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { CollaborateDocService } from './collaborate-doc.service';
-import { DetailDto } from './dto/collaborate-doc.dto';
+import { DetailDto, CreateShareLinkDto, ShareDetailDto } from './dto/collaborate-doc.dto';
 
 @Controller('document')
 export class CollaborateDocController {
@@ -23,4 +23,12 @@ export class CollaborateDocController {
 
     return this.collaborateDocService.getDoc(recordId);
   }
+
+  @Post('/share/create')
+  shareDoc(@Body() CreateShareLinkDto: CreateShareLinkDto) {
+    return this.collaborateDocService.createShareLink(CreateShareLinkDto);
+  }
+
+  @Post('/share/detail')
+  shareDetail(@Body() ShareDetailDto: ShareDetailDto) {}
 }

@@ -11,6 +11,15 @@ export class CollaborateDoc extends Document {
 
   @Prop({ default: Date.now })
   lastModified: Date;
+
+  @Prop()
+  shareId: string;
+
+  @Prop()
+  shareLink: string;
+
+  @Prop({ default: 'edit' })
+  accessLevel: string;
 }
 
 export type CollaborateDocDocument = HydratedDocument<CollaborateDoc>;
