@@ -12,14 +12,11 @@ import { AllExceptionFilter } from './core/filter/all-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './api/auth/auth.module';
-import { SocketModule } from './api/socket/socket.module';
-import { UploadModule } from './api/upload/upload.module';
-import { PostModule } from './api/post/post.module';
 import { CollaborateDocModule } from './api/collaborate-doc/collaborate-doc.module';
 
 import loadDatabaseConfig from '@/config/mongo.config';
 
-const NODE_ENV = process.env.NODE_ENV ? 'production' : 'development';
+const NODE_ENV = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
 @Module({
   imports: [
@@ -36,9 +33,6 @@ const NODE_ENV = process.env.NODE_ENV ? 'production' : 'development';
     TasksModule,
     UserModule,
     AuthModule,
-    SocketModule,
-    UploadModule,
-    PostModule,
     CollaborateDocModule,
     ScheduleModule.forRoot(),
   ],
