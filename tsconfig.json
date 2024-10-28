@@ -29,7 +29,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "eslint.config.cjs",
-    ".storybook/**/*"
+    ".storybook/**/*",
+    "mongo-init.js"
   ],
   "exclude": ["node_modules"]
 }

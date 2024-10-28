@@ -16,6 +16,7 @@ import { SocketModule } from './api/socket/socket.module';
 import { UploadModule } from './api/upload/upload.module';
 import { PostModule } from './api/post/post.module';
 import { CollaborateDocModule } from './api/collaborate-doc/collaborate-doc.module';
+import { CodeQuestionsModule } from './api/code-questions/code-questions.module';
 
 import loadDatabaseConfig from '@/config/mongo.config';
 
@@ -40,6 +41,7 @@ const NODE_ENV = process.env.NODE_ENV ? 'production' : 'development';
     UploadModule,
     PostModule,
     CollaborateDocModule,
+    CodeQuestionsModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [],
