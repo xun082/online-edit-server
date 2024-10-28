@@ -5,9 +5,12 @@ import { Model } from 'mongoose';
 import * as Y from 'yjs';
 import { MongodbPersistence } from 'y-mongodb-provider';
 import { v4 as uuidv4 } from 'uuid';
+import { ConfigService } from '@nestjs/config';
 
 import { CollaborateDoc } from './schema/collaborate-doc.schema';
 import { CreateShareLinkDto, ShareDetailDto } from './dto/collaborate-doc.dto';
+
+import { MongoDbUrlEnum } from '@/common/enum/config.enum';
 
 @Injectable()
 export class CollaborateDocService implements OnModuleInit {
@@ -15,16 +18,14 @@ export class CollaborateDocService implements OnModuleInit {
 
   constructor(
     @InjectModel(CollaborateDoc.name) private CollaborateDocModal: Model<CollaborateDoc>,
+    private configService: ConfigService,
   ) {}
 
   async onModuleInit() {
-    this.mdb = new MongodbPersistence(
-      'mongodb://admin:online@localhost:27017/online?authSource=admin',
-      {
-        collectionName: 'transactions',
-        multipleCollections: false,
-      },
-    );
+    this.mdb = new MongodbPersistence(this.configService.get(MongoDbUrlEnum.MONGODB_URL), {
+      collectionName: 'transactions',
+      multipleCollections: false,
+    });
   }
 
   async getDocList() {
@@ -44,7 +45,11 @@ export class CollaborateDocService implements OnModuleInit {
       state: Buffer.from(initialState),
     });
 
-    await newDoc.save();
+    const data = await newDoc.save();
+
+    return {
+      data,
+    };
   }
 
   async getDoc(recordId: string) {
