@@ -14,6 +14,10 @@ export enum MongoDbConfigEnum {
   MONGODB_AUTH_SOURCE = 'MONGODB_AUTH_SOURCE',
 }
 
+export enum MongoDbUrlEnum {
+  MONGODB_URL = 'MONGODB_URL',
+}
+
 export enum EmailConfigEnum {
   EMAIL_HOST = 'EMAIL_HOST',
   EMAIL_PORT = 'EMAIL_PORT',
