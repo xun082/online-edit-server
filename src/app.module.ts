@@ -13,6 +13,7 @@ import { TransformInterceptor } from './core/interceptor/transform.interceptor';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './api/auth/auth.module';
 import { CollaborateDocModule } from './api/collaborate-doc/collaborate-doc.module';
+import { CodeQuestionsModule } from './api/code-questions/code-questions.module';
 
 import loadDatabaseConfig from '@/config/mongo.config';
 
@@ -34,6 +35,7 @@ const NODE_ENV = process.env.NODE_ENV === 'production' ? 'production' : 'develop
     UserModule,
     AuthModule,
     CollaborateDocModule,
+    CodeQuestionsModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [],
