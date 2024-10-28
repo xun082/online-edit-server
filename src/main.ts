@@ -54,7 +54,7 @@ async function bootstrap() {
     jsonDocumentUrl: 'openApiJson',
   });
 
-  await app.listen(8080, '0.0.0.0');
+  await app.listen(3001, '0.0.0.0');
 }
 
 bootstrap();
