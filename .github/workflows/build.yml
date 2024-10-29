@@ -29,7 +29,26 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            # 1. 添加 pnpm 和 pm2 到 PATH
+            export PATH="$HOME/.local/share/pnpm:/usr/local/bin:$PATH"
+
+            # 2. 安装 pnpm 9.4.0 版本，如果未安装或版本不匹配
+            if ! command -v pnpm &> /dev/null || [ "$(pnpm -v)" != "9.4.0" ]; then
+              echo "Installing pnpm 9.4.0..."
+              curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=9.4.0 sh -
+              export PATH="$HOME/.local/share/pnpm:$PATH"
+            fi
+
+            # 3. 安装 pm2，如果未安装
+            if ! command -v pm2 &> /dev/null; then
+              echo "Installing pm2..."
+              npm install -g pm2
+            fi
+
+            # 4. 进入项目目录，安装依赖并构建项目
             cd /home/apps-server/online-editor-server
             pnpm install
             pnpm build
-            pm2 start ecosystem.config.js --env production
+
+            # 5. 启动或重启应用
+            pm2 start ecosystem.config.js --env production --name online-editor-server || pm2 restart online-editor-server
