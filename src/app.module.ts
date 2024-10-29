@@ -19,6 +19,8 @@ import loadDatabaseConfig from '@/config/mongo.config';
 
 const NODE_ENV = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
+console.log(NODE_ENV);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
