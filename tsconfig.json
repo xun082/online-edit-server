@@ -30,7 +30,8 @@
     ".next/types/**/*.ts",
     "eslint.config.cjs",
     ".storybook/**/*",
-    "mongo-init.js"
+    "mongo-init.js",
+    "ecosystem.config.js"
   ],
   "exclude": ["node_modules"]
 }
